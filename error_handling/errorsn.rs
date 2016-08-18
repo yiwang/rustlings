@@ -19,12 +19,12 @@ use std::fmt;
 use std::io;
 
 // PositiveNonzeroInteger is a struct defined below the tests.
-fn read_and_validate(b: &mut io::BufRead) -> Result<PositiveNonzeroInteger, ???> {
+fn read_and_validate(b: &mut io::BufRead) -> Result<PositiveNonzeroInteger, Box<error::Error>> {
     let mut line = String::new();
-    b.read_line(&mut line);
-    let num: i64 = line.trim().parse();
-    let answer = PositiveNonzeroInteger::new(num);
-    answer
+    try!(b.read_line(&mut line));
+    let num: i64 = try!(line.trim().parse());
+    let answer = try!(PositiveNonzeroInteger::new(num));
+    Ok(answer)
 }
 
 // This is a test helper function that turns a &str into a BufReader.
@@ -82,7 +82,8 @@ impl PositiveNonzeroInteger {
 #[test]
 fn test_positive_nonzero_integer_creation() {
     assert!(PositiveNonzeroInteger::new(10).is_ok());
-    assert_eq!(Err(CreationError::Negative), PositiveNonzeroInteger::new(-10));
+    assert_eq!(Err(CreationError::Negative),
+               PositiveNonzeroInteger::new(-10));
     assert_eq!(Err(CreationError::Zero), PositiveNonzeroInteger::new(0));
 }
 
