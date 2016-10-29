@@ -23,6 +23,16 @@ pub struct NotDivisibleError {
 // evenly divisible by b.
 // Otherwise, it should return a suitable error.
 pub fn divide(a: i32, b: i32) -> Result<i32, DivisionError> {
+    if b == 0 {
+        Err(DivisionError::DivideByZero)
+    } else if (a / b) * b == a {
+        Ok(a / b)
+    } else {
+        Err(DivisionError::NotDivisible(NotDivisibleError {
+            dividend: a,
+            divisor: b,
+        }))
+    }
 }
 
 #[cfg(test)]
@@ -37,13 +47,11 @@ mod tests {
 
     #[test]
     fn test_not_divisible() {
-        assert_eq!(
-            divide(81, 6),
-            Err(DivisionError::NotDivisible(NotDivisibleError{
-                dividend: 81,
-                divisor: 6
-            }))
-        );
+        assert_eq!(divide(81, 6),
+                   Err(DivisionError::NotDivisible(NotDivisibleError {
+                       dividend: 81,
+                       divisor: 6,
+                   })));
     }
 
     #[test]
@@ -57,12 +65,12 @@ mod tests {
     }
 
     // Iterator exercises using your `divide` function
-    /*
+
     #[test]
     fn result_with_list() {
         let numbers = vec![27, 297, 38502, 81];
         let division_results = numbers.into_iter().map(|n| divide(n, 27));
-        let x //... Fill in here!
+        let x: Result<Vec<_>, _> = division_results.collect(); //... Fill in here!
         assert_eq!(format!("{:?}", x), "Ok([1, 11, 1426, 3])");
     }
 
@@ -70,10 +78,13 @@ mod tests {
     fn list_of_results() {
         let numbers = vec![27, 297, 38502, 81];
         let division_results = numbers.into_iter().map(|n| divide(n, 27));
-        let x //... Fill in here!
+        // let x = division_results.collect::<Vec<Result<i32, DivisionError>>>(); //... Fill in here!
+        // let x = division_results.collect::<Vec<Result<_, _>>>(); //... Fill in here!
+        let x: Vec<_> = division_results.collect(); //... Fill in here!
         assert_eq!(format!("{:?}", x), "[Ok(1), Ok(11), Ok(1426), Ok(3)]");
     }
-    */
+
+
 }
 
 

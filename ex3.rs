@@ -1,5 +1,6 @@
 // Make me compile!
-
+// #[derive(Debug, PartialEq, Eq)]
+#[derive(Debug)]
 struct Foo {
     capacity: i32,
 }
